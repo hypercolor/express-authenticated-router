@@ -1,2 +1,2 @@
-import { AuthenticatedRouter } from "./src/AuthenticatedRouter";
 
+export { AuthenticatedRouter, AuthenticatedRoute } from "./src/AuthenticatedRouter";
