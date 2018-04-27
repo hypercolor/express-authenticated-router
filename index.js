@@ -91,10 +91,91 @@ return /******/ (function(modules) { // webpackBootstrap
 /*!******************!*\
   !*** ./index.ts ***!
   \******************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
+/*! exports provided: AuthenticatedRouter, AuthenticatedRoute */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _src_AuthenticatedRouter__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./src/AuthenticatedRouter */ "./src/AuthenticatedRouter.ts");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "AuthenticatedRouter", function() { return _src_AuthenticatedRouter__WEBPACK_IMPORTED_MODULE_0__["AuthenticatedRouter"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "AuthenticatedRoute", function() { return _src_AuthenticatedRouter__WEBPACK_IMPORTED_MODULE_0__["AuthenticatedRoute"]; });
+
+
+
+
+
+/***/ }),
+
+/***/ "./src/AuthenticatedRouter.ts":
+/*!************************************!*\
+  !*** ./src/AuthenticatedRouter.ts ***!
+  \************************************/
+/*! exports provided: AuthenticatedRoute, AuthenticatedRouter */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "AuthenticatedRoute", function() { return AuthenticatedRoute; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "AuthenticatedRouter", function() { return AuthenticatedRouter; });
+/* harmony import */ var express__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! express */ "express");
+/* harmony import */ var express__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(express__WEBPACK_IMPORTED_MODULE_0__);
+
+
+var AuthenticatedRoute = (function () {
+    function AuthenticatedRoute(routePrefix, router, authHandler) {
+        this.authHandler = authHandler;
+        this.route = router.route(routePrefix);
+    }
+    AuthenticatedRoute.prototype.get = function (handler) {
+        if (this.authHandler) {
+            this.route.get(this.authHandler, handler);
+        }
+        else {
+            this.route.get(handler);
+        }
+        return this;
+    };
+    AuthenticatedRoute.prototype.post = function (handler) {
+        if (this.authHandler) {
+            this.route.post(this.authHandler, handler);
+        }
+        else {
+            this.route.post(handler);
+        }
+        return this;
+    };
+    AuthenticatedRoute.prototype.put = function (handler) {
+        if (this.authHandler) {
+            this.route.put(this.authHandler, handler);
+        }
+        else {
+            this.route.put(handler);
+        }
+        return this;
+    };
+    AuthenticatedRoute.prototype.delete = function (handler) {
+        if (this.authHandler) {
+            this.route.delete(this.authHandler, handler);
+        }
+        else {
+            this.route.delete(handler);
+        }
+        return this;
+    };
+    return AuthenticatedRoute;
+}());
+
+var AuthenticatedRouter = (function () {
+    function AuthenticatedRouter(authHandler) {
+        this.authHandler = authHandler;
+        this.router = express__WEBPACK_IMPORTED_MODULE_0__["Router"]();
+    }
+    AuthenticatedRouter.prototype.route = function (route) {
+        return new AuthenticatedRoute(route, this.router, this.authHandler);
+    };
+    return AuthenticatedRouter;
+}());
 
 
 
@@ -109,6 +190,17 @@ return /******/ (function(modules) { // webpackBootstrap
 
 module.exports = __webpack_require__(/*! ./index.ts */"./index.ts");
 
+
+/***/ }),
+
+/***/ "express":
+/*!**************************!*\
+  !*** external "express" ***!
+  \**************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = require("express");
 
 /***/ })
 

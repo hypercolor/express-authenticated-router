@@ -1,11 +1,9 @@
 {
   "name": "express-authenticated-router",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Authenticated router class for Express",
-  "main": "umd/index.js",
-  "module": "lib/index.js",
-  "es2015": "lib-esm/index.js",
-  "typings": "typings/index.d.ts",
+  "main": "index.js",
+  "types": "index.d.ts",
   "repository": {
     "type": "git",
     "url": "https://www.github.com/hypercolor/express-authenticated-router"
@@ -106,6 +104,7 @@
     "commitizen": "2.9.6",
     "cross-var": "1.0.3",
     "cz-conventional-changelog": "2.0.0",
+    "dts-bundle": "0.7.3",
     "express": "4.16.3",
     "gzip-size-cli": "2.0.0",
     "husky": "0.14.1",
