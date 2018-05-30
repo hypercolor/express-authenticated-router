@@ -1,6 +1,6 @@
 {
   "name": "express-authenticated-router",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Authenticated router class for Express",
   "main": "index.js",
   "types": "index.d.ts",
@@ -44,6 +44,10 @@
     "release:preflight:package": "npm pack",
     "size": "shx echo \"Gzipped Size:\" && cross-var strip-json-comments --no-whitespace $npm_package_main | gzip-size"
   },
+  "files": [
+    "index.d.ts",
+    "index.js"
+  ],
   "config": {
     "commitizen": {
       "path": "./node_modules/cz-conventional-changelog"
