@@ -1,5 +1,6 @@
 import * as express from 'express';
 import {IRoute, Router} from 'express';
+import { IRouterMatcher } from "express-serve-static-core";
 
 
 
@@ -38,11 +39,47 @@ export class AuthenticatedRoute {
     return this;
   }
 
+  public patch(handler: any) {
+    if (this.authHandler){
+      this.route.patch(this.authHandler, handler);
+    } else {
+      this.route.patch(handler);
+    }
+    return this;
+  }
+
   public delete(handler: any) {
     if (this.authHandler){
       this.route.delete(this.authHandler, handler);
     } else {
       this.route.delete(handler);
+    }
+    return this;
+  }
+
+  public all(handler: any) {
+    if (this.authHandler){
+      this.route.all(this.authHandler, handler);
+    } else {
+      this.route.all(handler);
+    }
+    return this;
+  }
+
+  public options(handler: any) {
+    if (this.authHandler){
+      this.route.options(this.authHandler, handler);
+    } else {
+      this.route.options(handler);
+    }
+    return this;
+  }
+
+  public head(handler: any) {
+    if (this.authHandler){
+      this.route.head(this.authHandler, handler);
+    } else {
+      this.route.head(handler);
     }
     return this;
   }
