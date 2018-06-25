@@ -154,12 +154,48 @@ var AuthenticatedRoute = (function () {
         }
         return this;
     };
+    AuthenticatedRoute.prototype.patch = function (handler) {
+        if (this.authHandler) {
+            this.route.patch(this.authHandler, handler);
+        }
+        else {
+            this.route.patch(handler);
+        }
+        return this;
+    };
     AuthenticatedRoute.prototype.delete = function (handler) {
         if (this.authHandler) {
             this.route.delete(this.authHandler, handler);
         }
         else {
             this.route.delete(handler);
+        }
+        return this;
+    };
+    AuthenticatedRoute.prototype.all = function (handler) {
+        if (this.authHandler) {
+            this.route.all(this.authHandler, handler);
+        }
+        else {
+            this.route.all(handler);
+        }
+        return this;
+    };
+    AuthenticatedRoute.prototype.options = function (handler) {
+        if (this.authHandler) {
+            this.route.options(this.authHandler, handler);
+        }
+        else {
+            this.route.options(handler);
+        }
+        return this;
+    };
+    AuthenticatedRoute.prototype.head = function (handler) {
+        if (this.authHandler) {
+            this.route.head(this.authHandler, handler);
+        }
+        else {
+            this.route.head(handler);
         }
         return this;
     };

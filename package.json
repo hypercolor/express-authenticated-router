@@ -1,6 +1,6 @@
 {
   "name": "express-authenticated-router",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "description": "Authenticated router class for Express",
   "main": "index.js",
   "types": "index.d.ts",

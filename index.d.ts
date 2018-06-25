@@ -10,7 +10,11 @@ export class AuthenticatedRoute {
     get(handler: any): this;
     post(handler: any): this;
     put(handler: any): this;
+    patch(handler: any): this;
     delete(handler: any): this;
+    all(handler: any): this;
+    options(handler: any): this;
+    head(handler: any): this;
 }
 export class AuthenticatedRouter {
     router: Router;
