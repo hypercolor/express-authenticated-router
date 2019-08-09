@@ -104,7 +104,6 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-
 /***/ }),
 
 /***/ "./src/AuthenticatedRouter.ts":
@@ -121,15 +120,15 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var express__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! express */ "express");
 /* harmony import */ var express__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(express__WEBPACK_IMPORTED_MODULE_0__);
 
-
-var AuthenticatedRoute = (function () {
-    function AuthenticatedRoute(routePrefix, router, authHandler) {
-        this.authHandler = authHandler;
+var AuthenticatedRoute = /** @class */ (function () {
+    function AuthenticatedRoute(routePrefix, router, opts) {
+        this.opts = opts;
         this.route = router.route(routePrefix);
     }
     AuthenticatedRoute.prototype.get = function (handler) {
-        if (this.authHandler) {
-            this.route.get(this.authHandler, handler);
+        handler = this.opts.controllerGenerator ? this.opts.controllerGenerator(handler) : handler;
+        if (this.opts.authHandler) {
+            this.route.get(this.opts.authHandler, handler);
         }
         else {
             this.route.get(handler);
@@ -137,8 +136,9 @@ var AuthenticatedRoute = (function () {
         return this;
     };
     AuthenticatedRoute.prototype.post = function (handler) {
-        if (this.authHandler) {
-            this.route.post(this.authHandler, handler);
+        handler = this.opts.controllerGenerator ? this.opts.controllerGenerator(handler) : handler;
+        if (this.opts.authHandler) {
+            this.route.post(this.opts.authHandler, handler);
         }
         else {
             this.route.post(handler);
@@ -146,8 +146,9 @@ var AuthenticatedRoute = (function () {
         return this;
     };
     AuthenticatedRoute.prototype.put = function (handler) {
-        if (this.authHandler) {
-            this.route.put(this.authHandler, handler);
+        handler = this.opts.controllerGenerator ? this.opts.controllerGenerator(handler) : handler;
+        if (this.opts.authHandler) {
+            this.route.put(this.opts.authHandler, handler);
         }
         else {
             this.route.put(handler);
@@ -155,8 +156,9 @@ var AuthenticatedRoute = (function () {
         return this;
     };
     AuthenticatedRoute.prototype.patch = function (handler) {
-        if (this.authHandler) {
-            this.route.patch(this.authHandler, handler);
+        handler = this.opts.controllerGenerator ? this.opts.controllerGenerator(handler) : handler;
+        if (this.opts.authHandler) {
+            this.route.patch(this.opts.authHandler, handler);
         }
         else {
             this.route.patch(handler);
@@ -164,8 +166,9 @@ var AuthenticatedRoute = (function () {
         return this;
     };
     AuthenticatedRoute.prototype.delete = function (handler) {
-        if (this.authHandler) {
-            this.route.delete(this.authHandler, handler);
+        handler = this.opts.controllerGenerator ? this.opts.controllerGenerator(handler) : handler;
+        if (this.opts.authHandler) {
+            this.route.delete(this.opts.authHandler, handler);
         }
         else {
             this.route.delete(handler);
@@ -173,8 +176,9 @@ var AuthenticatedRoute = (function () {
         return this;
     };
     AuthenticatedRoute.prototype.all = function (handler) {
-        if (this.authHandler) {
-            this.route.all(this.authHandler, handler);
+        handler = this.opts.controllerGenerator ? this.opts.controllerGenerator(handler) : handler;
+        if (this.opts.authHandler) {
+            this.route.all(this.opts.authHandler, handler);
         }
         else {
             this.route.all(handler);
@@ -182,8 +186,9 @@ var AuthenticatedRoute = (function () {
         return this;
     };
     AuthenticatedRoute.prototype.options = function (handler) {
-        if (this.authHandler) {
-            this.route.options(this.authHandler, handler);
+        handler = this.opts.controllerGenerator ? this.opts.controllerGenerator(handler) : handler;
+        if (this.opts.authHandler) {
+            this.route.options(this.opts.authHandler, handler);
         }
         else {
             this.route.options(handler);
@@ -191,8 +196,9 @@ var AuthenticatedRoute = (function () {
         return this;
     };
     AuthenticatedRoute.prototype.head = function (handler) {
-        if (this.authHandler) {
-            this.route.head(this.authHandler, handler);
+        handler = this.opts.controllerGenerator ? this.opts.controllerGenerator(handler) : handler;
+        if (this.opts.authHandler) {
+            this.route.head(this.opts.authHandler, handler);
         }
         else {
             this.route.head(handler);
@@ -202,13 +208,14 @@ var AuthenticatedRoute = (function () {
     return AuthenticatedRoute;
 }());
 
-var AuthenticatedRouter = (function () {
-    function AuthenticatedRouter(authHandler) {
-        this.authHandler = authHandler;
+var AuthenticatedRouter = /** @class */ (function () {
+    function AuthenticatedRouter(options) {
+        this.options = options;
         this.router = express__WEBPACK_IMPORTED_MODULE_0__["Router"]();
+        this.options = options || {};
     }
     AuthenticatedRouter.prototype.route = function (route) {
-        return new AuthenticatedRoute(route, this.router, this.authHandler);
+        return new AuthenticatedRoute(route, this.router, this.options);
     };
     return AuthenticatedRouter;
 }());

@@ -5,8 +5,12 @@
 import * as express from 'express';
 import { Router } from 'express';
 
+export interface IAuthenticatedRouterOptions {
+    authHandler?: any;
+    controllerGenerator?: any;
+}
 export class AuthenticatedRoute {
-    constructor(routePrefix: string, router: express.Router, authHandler?: any);
+    constructor(routePrefix: string, router: express.Router, opts: IAuthenticatedRouterOptions);
     get(handler: any): this;
     post(handler: any): this;
     put(handler: any): this;
@@ -18,7 +22,7 @@ export class AuthenticatedRoute {
 }
 export class AuthenticatedRouter {
     router: Router;
-    constructor(authHandler?: any);
+    constructor(options?: IAuthenticatedRouterOptions | undefined);
     route(route: string): AuthenticatedRoute;
 }
 

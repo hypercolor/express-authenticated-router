@@ -1,103 +1,107 @@
-import * as express from 'express';
-import {IRoute, Router} from 'express';
+import * as express from 'express'
+import { IRoute, Router } from 'express'
 
-
+export interface IAuthenticatedRouterOptions {
+  authHandler?: any
+  controllerGenerator?: any
+}
 
 export class AuthenticatedRoute {
+  private route: IRoute
 
-  private route: IRoute;
-
-  constructor(routePrefix: string, router: express.Router, private authHandler?: any){
-    this.route = router.route(routePrefix);
+  constructor(routePrefix: string, router: express.Router, private opts: IAuthenticatedRouterOptions) {
+    this.route = router.route(routePrefix)
   }
 
   public get(handler: any) {
-    if (this.authHandler){
-      this.route.get(this.authHandler, handler);
+    handler = this.opts.controllerGenerator ? this.opts.controllerGenerator(handler) : handler
+    if (this.opts.authHandler) {
+      this.route.get(this.opts.authHandler, handler)
     } else {
-      this.route.get(handler);
+      this.route.get(handler)
     }
-    return this;
+    return this
   }
 
   public post(handler: any) {
-    if (this.authHandler){
-      this.route.post(this.authHandler, handler);
+    handler = this.opts.controllerGenerator ? this.opts.controllerGenerator(handler) : handler
+    if (this.opts.authHandler) {
+      this.route.post(this.opts.authHandler, handler)
     } else {
-      this.route.post(handler);
+      this.route.post(handler)
     }
-    return this;
+    return this
   }
 
   public put(handler: any) {
-    if (this.authHandler){
-      this.route.put(this.authHandler, handler);
+    handler = this.opts.controllerGenerator ? this.opts.controllerGenerator(handler) : handler
+    if (this.opts.authHandler) {
+      this.route.put(this.opts.authHandler, handler)
     } else {
-      this.route.put(handler);
+      this.route.put(handler)
     }
-    return this;
+    return this
   }
 
   public patch(handler: any) {
-    if (this.authHandler){
-      this.route.patch(this.authHandler, handler);
+    handler = this.opts.controllerGenerator ? this.opts.controllerGenerator(handler) : handler
+    if (this.opts.authHandler) {
+      this.route.patch(this.opts.authHandler, handler)
     } else {
-      this.route.patch(handler);
+      this.route.patch(handler)
     }
-    return this;
+    return this
   }
 
   public delete(handler: any) {
-    if (this.authHandler){
-      this.route.delete(this.authHandler, handler);
+    handler = this.opts.controllerGenerator ? this.opts.controllerGenerator(handler) : handler
+    if (this.opts.authHandler) {
+      this.route.delete(this.opts.authHandler, handler)
     } else {
-      this.route.delete(handler);
+      this.route.delete(handler)
     }
-    return this;
+    return this
   }
 
   public all(handler: any) {
-    if (this.authHandler){
-      this.route.all(this.authHandler, handler);
+    handler = this.opts.controllerGenerator ? this.opts.controllerGenerator(handler) : handler
+    if (this.opts.authHandler) {
+      this.route.all(this.opts.authHandler, handler)
     } else {
-      this.route.all(handler);
+      this.route.all(handler)
     }
-    return this;
+    return this
   }
 
   public options(handler: any) {
-    if (this.authHandler){
-      this.route.options(this.authHandler, handler);
+    handler = this.opts.controllerGenerator ? this.opts.controllerGenerator(handler) : handler
+    if (this.opts.authHandler) {
+      this.route.options(this.opts.authHandler, handler)
     } else {
-      this.route.options(handler);
+      this.route.options(handler)
     }
-    return this;
+    return this
   }
 
   public head(handler: any) {
-    if (this.authHandler){
-      this.route.head(this.authHandler, handler);
+    handler = this.opts.controllerGenerator ? this.opts.controllerGenerator(handler) : handler
+    if (this.opts.authHandler) {
+      this.route.head(this.opts.authHandler, handler)
     } else {
-      this.route.head(handler);
+      this.route.head(handler)
     }
-    return this;
+    return this
   }
-
 }
 
-
 export class AuthenticatedRouter {
+  public router: Router = express.Router()
 
-
-  public router: Router = express.Router();
-
-  constructor(private authHandler?: any){
-
+  constructor(private readonly options?: IAuthenticatedRouterOptions) {
+    this.options = options || {}
   }
 
-  public route(route: string){
-
-    return new AuthenticatedRoute(route, this.router, this.authHandler);
+  public route(route: string) {
+    return new AuthenticatedRoute(route, this.router, this.options!)
   }
-
 }
