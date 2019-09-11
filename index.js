@@ -124,9 +124,6 @@ var AuthenticatedRoute = /** @class */ (function () {
     function AuthenticatedRoute(routePrefix, router, opts) {
         this.opts = opts;
         this.route = router.route(routePrefix);
-        if (this.opts.authHandlers && this.opts.authHandlers.constructor === Array) {
-            this.opts.authHandlers = [this.opts.authHandlers];
-        }
     }
     AuthenticatedRoute.prototype.get = function (handler) {
         return this.handleMethod('get', handler);
@@ -155,8 +152,11 @@ var AuthenticatedRoute = /** @class */ (function () {
     AuthenticatedRoute.prototype.handleMethod = function (name, handler) {
         var _a;
         handler = this.opts.controllerGenerator ? this.opts.controllerGenerator(handler) : handler;
-        if (this.opts.authHandlers) {
-            (_a = this.route)[name].apply(_a, this.opts.authHandlers.concat([handler]));
+        if (this.opts.authHandlers && this.opts.authHandlers.constructor === Array) {
+            (_a = this.route)[name].apply(_a, this.opts.authHandlers.append(handler));
+        }
+        else if (this.opts.authHandlers) {
+            this.route[name](this.opts.authHandlers, handler);
         }
         else {
             this.route[name](handler);
