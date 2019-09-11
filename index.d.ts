@@ -6,7 +6,7 @@ import * as express from 'express';
 import { Router } from 'express';
 
 export interface IAuthenticatedRouterOptions {
-    authHandler?: any;
+    authHandlers?: any;
     controllerGenerator?: any;
 }
 export class AuthenticatedRoute {

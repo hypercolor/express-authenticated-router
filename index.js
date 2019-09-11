@@ -124,84 +124,42 @@ var AuthenticatedRoute = /** @class */ (function () {
     function AuthenticatedRoute(routePrefix, router, opts) {
         this.opts = opts;
         this.route = router.route(routePrefix);
+        if (this.opts.authHandlers && this.opts.authHandlers.constructor === Array) {
+            this.opts.authHandlers = [this.opts.authHandlers];
+        }
     }
     AuthenticatedRoute.prototype.get = function (handler) {
-        handler = this.opts.controllerGenerator ? this.opts.controllerGenerator(handler) : handler;
-        if (this.opts.authHandler) {
-            this.route.get(this.opts.authHandler, handler);
-        }
-        else {
-            this.route.get(handler);
-        }
-        return this;
+        return this.handleMethod('get', handler);
     };
     AuthenticatedRoute.prototype.post = function (handler) {
-        handler = this.opts.controllerGenerator ? this.opts.controllerGenerator(handler) : handler;
-        if (this.opts.authHandler) {
-            this.route.post(this.opts.authHandler, handler);
-        }
-        else {
-            this.route.post(handler);
-        }
-        return this;
+        return this.handleMethod('post', handler);
     };
     AuthenticatedRoute.prototype.put = function (handler) {
-        handler = this.opts.controllerGenerator ? this.opts.controllerGenerator(handler) : handler;
-        if (this.opts.authHandler) {
-            this.route.put(this.opts.authHandler, handler);
-        }
-        else {
-            this.route.put(handler);
-        }
-        return this;
+        return this.handleMethod('put', handler);
     };
     AuthenticatedRoute.prototype.patch = function (handler) {
-        handler = this.opts.controllerGenerator ? this.opts.controllerGenerator(handler) : handler;
-        if (this.opts.authHandler) {
-            this.route.patch(this.opts.authHandler, handler);
-        }
-        else {
-            this.route.patch(handler);
-        }
-        return this;
+        return this.handleMethod('patch', handler);
     };
     AuthenticatedRoute.prototype.delete = function (handler) {
-        handler = this.opts.controllerGenerator ? this.opts.controllerGenerator(handler) : handler;
-        if (this.opts.authHandler) {
-            this.route.delete(this.opts.authHandler, handler);
-        }
-        else {
-            this.route.delete(handler);
-        }
-        return this;
+        return this.handleMethod('delete', handler);
     };
     AuthenticatedRoute.prototype.all = function (handler) {
-        handler = this.opts.controllerGenerator ? this.opts.controllerGenerator(handler) : handler;
-        if (this.opts.authHandler) {
-            this.route.all(this.opts.authHandler, handler);
-        }
-        else {
-            this.route.all(handler);
-        }
-        return this;
+        return this.handleMethod('all', handler);
     };
     AuthenticatedRoute.prototype.options = function (handler) {
-        handler = this.opts.controllerGenerator ? this.opts.controllerGenerator(handler) : handler;
-        if (this.opts.authHandler) {
-            this.route.options(this.opts.authHandler, handler);
-        }
-        else {
-            this.route.options(handler);
-        }
-        return this;
+        return this.handleMethod('options', handler);
     };
     AuthenticatedRoute.prototype.head = function (handler) {
+        return this.handleMethod('head', handler);
+    };
+    AuthenticatedRoute.prototype.handleMethod = function (name, handler) {
+        var _a;
         handler = this.opts.controllerGenerator ? this.opts.controllerGenerator(handler) : handler;
-        if (this.opts.authHandler) {
-            this.route.head(this.opts.authHandler, handler);
+        if (this.opts.authHandlers) {
+            (_a = this.route)[name].apply(_a, this.opts.authHandlers.concat([handler]));
         }
         else {
-            this.route.head(handler);
+            this.route[name](handler);
         }
         return this;
     };
