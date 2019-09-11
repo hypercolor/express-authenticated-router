@@ -11,6 +11,7 @@ export interface IAuthenticatedRouterOptions {
 }
 export class AuthenticatedRoute {
     constructor(routePrefix: string, router: express.Router, opts: IAuthenticatedRouterOptions);
+    use(handler: any): this;
     get(handler: any): this;
     post(handler: any): this;
     put(handler: any): this;

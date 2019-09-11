@@ -123,8 +123,13 @@ __webpack_require__.r(__webpack_exports__);
 var AuthenticatedRoute = /** @class */ (function () {
     function AuthenticatedRoute(routePrefix, router, opts) {
         this.opts = opts;
+        this.myHandlers = [];
         this.route = router.route(routePrefix);
     }
+    AuthenticatedRoute.prototype.use = function (handler) {
+        this.myHandlers.push(handler);
+        return this;
+    };
     AuthenticatedRoute.prototype.get = function (handler) {
         return this.handleMethod('get', handler);
     };
@@ -152,16 +157,20 @@ var AuthenticatedRoute = /** @class */ (function () {
     AuthenticatedRoute.prototype.handleMethod = function (name, handler) {
         var _a;
         handler = this.opts.controllerGenerator ? this.opts.controllerGenerator(handler) : handler;
-        if (this.opts.authHandlers && this.opts.authHandlers.constructor === Array) {
-            (_a = this.route)[name].apply(_a, this.opts.authHandlers.concat([handler]));
-        }
-        else if (this.opts.authHandlers) {
-            this.route[name](this.opts.authHandlers, handler);
-        }
-        else {
-            this.route[name](handler);
-        }
+        (_a = this.route)[name].apply(_a, this.buildHandlersArray().concat([handler]));
         return this;
+    };
+    AuthenticatedRoute.prototype.buildHandlersArray = function () {
+        var handlers = [];
+        if (this.opts.authHandlers) {
+            if (this.opts.authHandlers.constructor === Array) {
+                handlers = handlers.concat(this.opts.authHandlers);
+            }
+            else {
+                handlers = [this.opts.authHandlers];
+            }
+        }
+        return handlers.concat(this.myHandlers);
     };
     return AuthenticatedRoute;
 }());

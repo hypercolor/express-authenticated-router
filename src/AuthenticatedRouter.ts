@@ -8,9 +8,15 @@ export interface IAuthenticatedRouterOptions {
 
 export class AuthenticatedRoute {
   private route: IRoute
+  private myHandlers: Array<any> = []
 
   constructor(routePrefix: string, router: express.Router, private opts: IAuthenticatedRouterOptions) {
     this.route = router.route(routePrefix)
+  }
+
+  public use(handler: any) {
+    this.myHandlers.push(handler)
+    return this
   }
 
   public get(handler: any) {
@@ -47,14 +53,20 @@ export class AuthenticatedRoute {
 
   private handleMethod(name: string, handler: any) {
     handler = this.opts.controllerGenerator ? this.opts.controllerGenerator(handler) : handler
-    if (this.opts.authHandlers && this.opts.authHandlers.constructor === Array) {
-      this.route[name](...this.opts.authHandlers.concat([handler]))
-    } else if (this.opts.authHandlers) {
-      this.route[name](this.opts.authHandlers, handler)
-    } else {
-      this.route[name](handler)
-    }
+    this.route[name](...this.buildHandlersArray(), handler)
     return this
+  }
+
+  private buildHandlersArray() {
+    let handlers: Array<any> = []
+    if (this.opts.authHandlers) {
+      if (this.opts.authHandlers.constructor === Array) {
+        handlers = handlers.concat(this.opts.authHandlers)
+      } else {
+        handlers = [this.opts.authHandlers]
+      }
+    }
+    return handlers.concat(this.myHandlers)
   }
 }
 
