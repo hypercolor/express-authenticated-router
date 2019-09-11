@@ -2,7 +2,7 @@ import * as express from 'express'
 import { IRoute, Router } from 'express'
 
 export interface IAuthenticatedRouterOptions {
-  authHandler?: any
+  authHandlers?: any
   controllerGenerator?: any
 }
 
@@ -11,84 +11,49 @@ export class AuthenticatedRoute {
 
   constructor(routePrefix: string, router: express.Router, private opts: IAuthenticatedRouterOptions) {
     this.route = router.route(routePrefix)
+    if (this.opts.authHandlers && this.opts.authHandlers.constructor === Array) {
+      this.opts.authHandlers = [this.opts.authHandlers]
+    }
   }
 
   public get(handler: any) {
-    handler = this.opts.controllerGenerator ? this.opts.controllerGenerator(handler) : handler
-    if (this.opts.authHandler) {
-      this.route.get(this.opts.authHandler, handler)
-    } else {
-      this.route.get(handler)
-    }
-    return this
+    return this.handleMethod('get', handler)
   }
 
   public post(handler: any) {
-    handler = this.opts.controllerGenerator ? this.opts.controllerGenerator(handler) : handler
-    if (this.opts.authHandler) {
-      this.route.post(this.opts.authHandler, handler)
-    } else {
-      this.route.post(handler)
-    }
-    return this
+    return this.handleMethod('post', handler)
   }
 
   public put(handler: any) {
-    handler = this.opts.controllerGenerator ? this.opts.controllerGenerator(handler) : handler
-    if (this.opts.authHandler) {
-      this.route.put(this.opts.authHandler, handler)
-    } else {
-      this.route.put(handler)
-    }
-    return this
+    return this.handleMethod('put', handler)
   }
 
   public patch(handler: any) {
-    handler = this.opts.controllerGenerator ? this.opts.controllerGenerator(handler) : handler
-    if (this.opts.authHandler) {
-      this.route.patch(this.opts.authHandler, handler)
-    } else {
-      this.route.patch(handler)
-    }
-    return this
+    return this.handleMethod('patch', handler)
   }
 
   public delete(handler: any) {
-    handler = this.opts.controllerGenerator ? this.opts.controllerGenerator(handler) : handler
-    if (this.opts.authHandler) {
-      this.route.delete(this.opts.authHandler, handler)
-    } else {
-      this.route.delete(handler)
-    }
-    return this
+    return this.handleMethod('delete', handler)
   }
 
   public all(handler: any) {
-    handler = this.opts.controllerGenerator ? this.opts.controllerGenerator(handler) : handler
-    if (this.opts.authHandler) {
-      this.route.all(this.opts.authHandler, handler)
-    } else {
-      this.route.all(handler)
-    }
-    return this
+    return this.handleMethod('all', handler)
   }
 
   public options(handler: any) {
-    handler = this.opts.controllerGenerator ? this.opts.controllerGenerator(handler) : handler
-    if (this.opts.authHandler) {
-      this.route.options(this.opts.authHandler, handler)
-    } else {
-      this.route.options(handler)
-    }
-    return this
+    return this.handleMethod('options', handler)
   }
 
   public head(handler: any) {
+    return this.handleMethod('head', handler)
+  }
+
+  private handleMethod(name: string, handler: any) {
     handler = this.opts.controllerGenerator ? this.opts.controllerGenerator(handler) : handler
-    if (this.opts.authHandler) {
-      this.route.head(this.opts.authHandler, handler)
+    if (this.opts.authHandlers) {
+      this.route[name](...this.opts.authHandlers, handler)
     } else {
-      this.route.head(handler)
+      this.route[name](handler)
     }
     return this
   }
