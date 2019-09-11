@@ -48,7 +48,7 @@ export class AuthenticatedRoute {
   private handleMethod(name: string, handler: any) {
     handler = this.opts.controllerGenerator ? this.opts.controllerGenerator(handler) : handler
     if (this.opts.authHandlers && this.opts.authHandlers.constructor === Array) {
-      this.route[name](...this.opts.authHandlers.push(handler))
+      this.route[name](...this.opts.authHandlers.concat([handler]))
     } else if (this.opts.authHandlers) {
       this.route[name](this.opts.authHandlers, handler)
     } else {

@@ -153,7 +153,7 @@ var AuthenticatedRoute = /** @class */ (function () {
         var _a;
         handler = this.opts.controllerGenerator ? this.opts.controllerGenerator(handler) : handler;
         if (this.opts.authHandlers && this.opts.authHandlers.constructor === Array) {
-            (_a = this.route)[name].apply(_a, this.opts.authHandlers.push(handler));
+            (_a = this.route)[name].apply(_a, this.opts.authHandlers.concat([handler]));
         }
         else if (this.opts.authHandlers) {
             this.route[name](this.opts.authHandlers, handler);
