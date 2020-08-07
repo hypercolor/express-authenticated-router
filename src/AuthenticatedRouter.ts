@@ -1,72 +1,74 @@
 import * as express from 'express'
-import { IRoute, Router } from 'express'
+import { IRoute, RequestHandler, Router } from 'express'
+
+type IControllerType = new (req: express.Request, res: express.Response, next: express.NextFunction) => any
 
 export interface IAuthenticatedRouterOptions {
-  authHandlers?: any
-  controllerGenerator?: any
+  middlewares?: Array<RequestHandler>
+  controllerGenerator?(controller: IControllerType): RequestHandler
 }
 
 export class AuthenticatedRoute {
   private route: IRoute
-  private myHandlers: Array<any> = []
+  private myMiddlewares: Array<RequestHandler> = []
 
   constructor(routePrefix: string, router: express.Router, private opts: IAuthenticatedRouterOptions) {
     this.route = router.route(routePrefix)
   }
 
-  public use(handler: any) {
-    this.myHandlers.push(handler)
+  public use(middleware: RequestHandler) {
+    this.myMiddlewares.push(middleware)
     return this
   }
 
-  public get(handler: any) {
-    return this.handleMethod('get', handler)
+  public get(controller: IControllerType | RequestHandler) {
+    return this.handleMethod('get', controller)
   }
 
-  public post(handler: any) {
-    return this.handleMethod('post', handler)
+  public post(controller: IControllerType | RequestHandler) {
+    return this.handleMethod('post', controller)
   }
 
-  public put(handler: any) {
-    return this.handleMethod('put', handler)
+  public put(controller: IControllerType | RequestHandler) {
+    return this.handleMethod('put', controller)
   }
 
-  public patch(handler: any) {
-    return this.handleMethod('patch', handler)
+  public patch(controller: IControllerType | RequestHandler) {
+    return this.handleMethod('patch', controller)
   }
 
-  public delete(handler: any) {
-    return this.handleMethod('delete', handler)
+  public delete(controller: IControllerType | RequestHandler) {
+    return this.handleMethod('delete', controller)
   }
 
-  public all(handler: any) {
-    return this.handleMethod('all', handler)
+  public all(controller: IControllerType | RequestHandler) {
+    return this.handleMethod('all', controller)
   }
 
-  public options(handler: any) {
-    return this.handleMethod('options', handler)
+  public options(controller: IControllerType | RequestHandler) {
+    return this.handleMethod('options', controller)
   }
 
-  public head(handler: any) {
-    return this.handleMethod('head', handler)
+  public head(controller: IControllerType | RequestHandler) {
+    return this.handleMethod('head', controller)
   }
 
-  private handleMethod(name: string, handler: any) {
-    handler = this.opts.controllerGenerator ? this.opts.controllerGenerator(handler) : handler
-    this.route[name](...this.buildHandlersArray(), handler)
-    return this
-  }
-
-  private buildHandlersArray() {
-    let handlers: Array<any> = []
-    if (this.opts.authHandlers) {
-      if (this.opts.authHandlers.constructor === Array) {
-        handlers = handlers.concat(this.opts.authHandlers)
-      } else {
-        handlers = [this.opts.authHandlers]
-      }
+  private handleMethod(name: string, handler: IControllerType | RequestHandler) {
+    if (this.opts.controllerGenerator) {
+      // handler MUST be a Controller type
+      handler = this.opts.controllerGenerator(handler as IControllerType)
     }
-    return handlers.concat(this.myHandlers)
+    // handler = this.opts.controllerGenerator ? this.opts.controllerGenerator(handler) : handler
+    this.route[name](...this.buildMiddlewaresArray(), handler)
+    return this
+  }
+
+  private buildMiddlewaresArray() {
+    let handlers: Array<any> = []
+    if (this.opts.middlewares) {
+      handlers = handlers.concat(this.opts.middlewares)
+    }
+    return handlers.concat(this.myMiddlewares)
   }
 }
 

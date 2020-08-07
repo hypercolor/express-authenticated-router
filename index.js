@@ -123,54 +123,53 @@ __webpack_require__.r(__webpack_exports__);
 var AuthenticatedRoute = /** @class */ (function () {
     function AuthenticatedRoute(routePrefix, router, opts) {
         this.opts = opts;
-        this.myHandlers = [];
+        this.myMiddlewares = [];
         this.route = router.route(routePrefix);
     }
-    AuthenticatedRoute.prototype.use = function (handler) {
-        this.myHandlers.push(handler);
+    AuthenticatedRoute.prototype.use = function (middleware) {
+        this.myMiddlewares.push(middleware);
         return this;
     };
-    AuthenticatedRoute.prototype.get = function (handler) {
-        return this.handleMethod('get', handler);
+    AuthenticatedRoute.prototype.get = function (controller) {
+        return this.handleMethod('get', controller);
     };
-    AuthenticatedRoute.prototype.post = function (handler) {
-        return this.handleMethod('post', handler);
+    AuthenticatedRoute.prototype.post = function (controller) {
+        return this.handleMethod('post', controller);
     };
-    AuthenticatedRoute.prototype.put = function (handler) {
-        return this.handleMethod('put', handler);
+    AuthenticatedRoute.prototype.put = function (controller) {
+        return this.handleMethod('put', controller);
     };
-    AuthenticatedRoute.prototype.patch = function (handler) {
-        return this.handleMethod('patch', handler);
+    AuthenticatedRoute.prototype.patch = function (controller) {
+        return this.handleMethod('patch', controller);
     };
-    AuthenticatedRoute.prototype.delete = function (handler) {
-        return this.handleMethod('delete', handler);
+    AuthenticatedRoute.prototype.delete = function (controller) {
+        return this.handleMethod('delete', controller);
     };
-    AuthenticatedRoute.prototype.all = function (handler) {
-        return this.handleMethod('all', handler);
+    AuthenticatedRoute.prototype.all = function (controller) {
+        return this.handleMethod('all', controller);
     };
-    AuthenticatedRoute.prototype.options = function (handler) {
-        return this.handleMethod('options', handler);
+    AuthenticatedRoute.prototype.options = function (controller) {
+        return this.handleMethod('options', controller);
     };
-    AuthenticatedRoute.prototype.head = function (handler) {
-        return this.handleMethod('head', handler);
+    AuthenticatedRoute.prototype.head = function (controller) {
+        return this.handleMethod('head', controller);
     };
     AuthenticatedRoute.prototype.handleMethod = function (name, handler) {
         var _a;
-        handler = this.opts.controllerGenerator ? this.opts.controllerGenerator(handler) : handler;
-        (_a = this.route)[name].apply(_a, this.buildHandlersArray().concat([handler]));
+        if (this.opts.controllerGenerator) {
+            // handler MUST be a Controller type
+            handler = this.opts.controllerGenerator(handler);
+        }
+        // handler = this.opts.controllerGenerator ? this.opts.controllerGenerator(handler) : handler
+        (_a = this.route)[name].apply(_a, this.buildMiddlewaresArray().concat([handler]));
         return this;
     };
-    AuthenticatedRoute.prototype.buildHandlersArray = function () {
+    AuthenticatedRoute.prototype.buildMiddlewaresArray = function () {
         var handlers = [];
-        if (this.opts.authHandlers) {
-            if (this.opts.authHandlers.constructor === Array) {
-                handlers = handlers.concat(this.opts.authHandlers);
-            }
-            else {
-                handlers = [this.opts.authHandlers];
-            }
+        if (this.opts.middlewares) {
+            handlers = handlers.concat(this.opts.middlewares);
         }
-        return handlers.concat(this.myHandlers);
+        return handlers.concat(this.myMiddlewares);
     };
     return AuthenticatedRoute;
 }());

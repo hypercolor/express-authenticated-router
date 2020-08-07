@@ -3,27 +3,29 @@
 //   ../express
 
 import * as express from 'express';
-import { Router } from 'express';
+import { RequestHandler, Router } from 'express';
 
+type IControllerType = new (req: express.Request, res: express.Response, next: express.NextFunction) => any;
 export interface IAuthenticatedRouterOptions {
-    authHandlers?: any;
-    controllerGenerator?: any;
+    middlewares?: Array<RequestHandler>;
+    controllerGenerator?(controller: IControllerType): RequestHandler;
 }
 export class AuthenticatedRoute {
     constructor(routePrefix: string, router: express.Router, opts: IAuthenticatedRouterOptions);
-    use(handler: any): this;
-    get(handler: any): this;
-    post(handler: any): this;
-    put(handler: any): this;
-    patch(handler: any): this;
-    delete(handler: any): this;
-    all(handler: any): this;
-    options(handler: any): this;
-    head(handler: any): this;
+    use(middleware: RequestHandler): this;
+    get(controller: IControllerType | RequestHandler): this;
+    post(controller: IControllerType | RequestHandler): this;
+    put(controller: IControllerType | RequestHandler): this;
+    patch(controller: IControllerType | RequestHandler): this;
+    delete(controller: IControllerType | RequestHandler): this;
+    all(controller: IControllerType | RequestHandler): this;
+    options(controller: IControllerType | RequestHandler): this;
+    head(controller: IControllerType | RequestHandler): this;
 }
 export class AuthenticatedRouter {
     router: Router;
     constructor(options?: IAuthenticatedRouterOptions | undefined);
     route(route: string): AuthenticatedRoute;
 }
+export {};
 
