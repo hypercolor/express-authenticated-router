@@ -4,20 +4,20 @@ import { IRoute, RequestHandler, Router } from 'express'
 type IControllerType = new (req: express.Request, res: express.Response, next: express.NextFunction) => any
 
 export interface IAuthenticatedRouterOptions {
-  middlewares?: Array<RequestHandler>
-  controllerGenerator?(controller: IControllerType): RequestHandler
+  middleware?: Array<RequestHandler>
+  controllerBuilder?(controller: IControllerType): RequestHandler
 }
 
 export class AuthenticatedRoute {
   private route: IRoute
-  private myMiddlewares: Array<RequestHandler> = []
+  private myMiddleware: Array<RequestHandler> = []
 
   constructor(routePrefix: string, router: express.Router, private opts: IAuthenticatedRouterOptions) {
     this.route = router.route(routePrefix)
   }
 
   public use(middleware: RequestHandler) {
-    this.myMiddlewares.push(middleware)
+    this.myMiddleware.push(middleware)
     return this
   }
 
@@ -54,21 +54,21 @@ export class AuthenticatedRoute {
   }
 
   private handleMethod(name: string, handler: IControllerType | RequestHandler) {
-    if (this.opts.controllerGenerator) {
+    if (this.opts.controllerBuilder) {
       // handler MUST be a Controller type
-      handler = this.opts.controllerGenerator(handler as IControllerType)
+      handler = this.opts.controllerBuilder(handler as IControllerType)
     }
     // handler = this.opts.controllerGenerator ? this.opts.controllerGenerator(handler) : handler
-    this.route[name](...this.buildMiddlewaresArray(), handler)
+    this.route[name](...this.buildMiddlewareArray(), handler)
     return this
   }
 
-  private buildMiddlewaresArray() {
+  private buildMiddlewareArray() {
     let handlers: Array<any> = []
-    if (this.opts.middlewares) {
-      handlers = handlers.concat(this.opts.middlewares)
+    if (this.opts.middleware) {
+      handlers = handlers.concat(this.opts.middleware)
     }
-    return handlers.concat(this.myMiddlewares)
+    return handlers.concat(this.myMiddleware)
   }
 }
 
@@ -77,6 +77,12 @@ export class AuthenticatedRouter {
 
   constructor(private readonly options?: IAuthenticatedRouterOptions) {
     this.options = options || {}
+  }
+
+  public static build(options: IAuthenticatedRouterOptions, builder: (router: AuthenticatedRouter) => void) {
+    const router = new AuthenticatedRouter()
+    builder(router)
+    return router.router
   }
 
   public route(route: string) {

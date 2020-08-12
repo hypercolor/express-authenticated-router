@@ -123,11 +123,11 @@ __webpack_require__.r(__webpack_exports__);
 var AuthenticatedRoute = /** @class */ (function () {
     function AuthenticatedRoute(routePrefix, router, opts) {
         this.opts = opts;
-        this.myMiddlewares = [];
+        this.myMiddleware = [];
         this.route = router.route(routePrefix);
     }
     AuthenticatedRoute.prototype.use = function (middleware) {
-        this.myMiddlewares.push(middleware);
+        this.myMiddleware.push(middleware);
         return this;
     };
     AuthenticatedRoute.prototype.get = function (controller) {
@@ -156,20 +156,20 @@ var AuthenticatedRoute = /** @class */ (function () {
     };
     AuthenticatedRoute.prototype.handleMethod = function (name, handler) {
         var _a;
-        if (this.opts.controllerGenerator) {
+        if (this.opts.controllerBuilder) {
             // handler MUST be a Controller type
-            handler = this.opts.controllerGenerator(handler);
+            handler = this.opts.controllerBuilder(handler);
         }
         // handler = this.opts.controllerGenerator ? this.opts.controllerGenerator(handler) : handler
-        (_a = this.route)[name].apply(_a, this.buildMiddlewaresArray().concat([handler]));
+        (_a = this.route)[name].apply(_a, this.buildMiddlewareArray().concat([handler]));
         return this;
     };
-    AuthenticatedRoute.prototype.buildMiddlewaresArray = function () {
+    AuthenticatedRoute.prototype.buildMiddlewareArray = function () {
         var handlers = [];
-        if (this.opts.middlewares) {
-            handlers = handlers.concat(this.opts.middlewares);
+        if (this.opts.middleware) {
+            handlers = handlers.concat(this.opts.middleware);
         }
-        return handlers.concat(this.myMiddlewares);
+        return handlers.concat(this.myMiddleware);
     };
     return AuthenticatedRoute;
 }());
@@ -180,6 +180,11 @@ var AuthenticatedRouter = /** @class */ (function () {
         this.router = express__WEBPACK_IMPORTED_MODULE_0__["Router"]();
         this.options = options || {};
     }
+    AuthenticatedRouter.build = function (options, builder) {
+        var router = new AuthenticatedRouter();
+        builder(router);
+        return router.router;
+    };
     AuthenticatedRouter.prototype.route = function (route) {
         return new AuthenticatedRoute(route, this.router, this.options);
     };

@@ -7,8 +7,8 @@ import { RequestHandler, Router } from 'express';
 
 type IControllerType = new (req: express.Request, res: express.Response, next: express.NextFunction) => any;
 export interface IAuthenticatedRouterOptions {
-    middlewares?: Array<RequestHandler>;
-    controllerGenerator?(controller: IControllerType): RequestHandler;
+    middleware?: Array<RequestHandler>;
+    controllerBuilder?(controller: IControllerType): RequestHandler;
 }
 export class AuthenticatedRoute {
     constructor(routePrefix: string, router: express.Router, opts: IAuthenticatedRouterOptions);
@@ -25,6 +25,7 @@ export class AuthenticatedRoute {
 export class AuthenticatedRouter {
     router: Router;
     constructor(options?: IAuthenticatedRouterOptions | undefined);
+    static build(options: IAuthenticatedRouterOptions, builder: (router: AuthenticatedRouter) => void): express.Router;
     route(route: string): AuthenticatedRoute;
 }
 export {};
