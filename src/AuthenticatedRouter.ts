@@ -80,7 +80,7 @@ export class AuthenticatedRouter {
   }
 
   public static build(options: IAuthenticatedRouterOptions, builder: (router: AuthenticatedRouter) => void) {
-    const router = new AuthenticatedRouter()
+    const router = new AuthenticatedRouter(options)
     builder(router)
     return router.router
   }

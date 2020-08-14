@@ -181,7 +181,7 @@ var AuthenticatedRouter = /** @class */ (function () {
         this.options = options || {};
     }
     AuthenticatedRouter.build = function (options, builder) {
-        var router = new AuthenticatedRouter();
+        var router = new AuthenticatedRouter(options);
         builder(router);
         return router.router;
     };
