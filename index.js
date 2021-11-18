@@ -119,10 +119,21 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "AuthenticatedRouter", function() { return AuthenticatedRouter; });
 /* harmony import */ var express__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! express */ "express");
 /* harmony import */ var express__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(express__WEBPACK_IMPORTED_MODULE_0__);
+var __spreadArray = (undefined && undefined.__spreadArray) || function (to, from, pack) {
+    if (pack || arguments.length === 2) for (var i = 0, l = from.length, ar; i < l; i++) {
+        if (ar || !(i in from)) {
+            if (!ar) ar = Array.prototype.slice.call(from, 0, i);
+            ar[i] = from[i];
+        }
+    }
+    return to.concat(ar || Array.prototype.slice.call(from));
+};
 
 var AuthenticatedRoute = /** @class */ (function () {
     function AuthenticatedRoute(routePrefix, router, opts) {
+        this.routePrefix = routePrefix;
         this.opts = opts;
+        this.verb = 'unknown';
         this.myMiddleware = [];
         this.route = router.route(routePrefix);
     }
@@ -156,12 +167,15 @@ var AuthenticatedRoute = /** @class */ (function () {
     };
     AuthenticatedRoute.prototype.handleMethod = function (name, handler) {
         var _a;
+        this.controller = handler;
+        this.verb = name;
         if (this.opts.controllerBuilder) {
             // handler MUST be a Controller type
             handler = this.opts.controllerBuilder(handler);
         }
         // handler = this.opts.controllerGenerator ? this.opts.controllerGenerator(handler) : handler
-        (_a = this.route)[name].apply(_a, this.buildMiddlewareArray().concat([handler]));
+        ;
+        (_a = this.route)[name].apply(_a, __spreadArray(__spreadArray([], this.buildMiddlewareArray(), false), [handler], false));
         return this;
     };
     AuthenticatedRoute.prototype.buildMiddlewareArray = function () {
@@ -177,16 +191,33 @@ var AuthenticatedRoute = /** @class */ (function () {
 var AuthenticatedRouter = /** @class */ (function () {
     function AuthenticatedRouter(options) {
         this.options = options;
-        this.router = express__WEBPACK_IMPORTED_MODULE_0__["Router"]();
+        this.router = Object(express__WEBPACK_IMPORTED_MODULE_0__["Router"])();
+        this.authenticatedRoutes = [];
         this.options = options || {};
     }
+    Object.defineProperty(AuthenticatedRouter.prototype, "routes", {
+        get: function () {
+            return this.authenticatedRoutes.map(function (authenticatedRoute) {
+                // console.log('controller ', authenticatedRoute.controller);
+                return {
+                    path: authenticatedRoute.routePrefix,
+                    verb: authenticatedRoute.verb,
+                    controller: authenticatedRoute.controller,
+                };
+            });
+        },
+        enumerable: false,
+        configurable: true
+    });
     AuthenticatedRouter.build = function (options, builder) {
         var router = new AuthenticatedRouter(options);
         builder(router);
-        return router.router;
+        return router;
     };
     AuthenticatedRouter.prototype.route = function (route) {
-        return new AuthenticatedRoute(route, this.router, this.options);
+        var authenticatedRoute = new AuthenticatedRoute(route, this.router, this.options);
+        this.authenticatedRoutes.push(authenticatedRoute);
+        return authenticatedRoute;
     };
     return AuthenticatedRouter;
 }());

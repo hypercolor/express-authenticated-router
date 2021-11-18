@@ -2,16 +2,23 @@
 // Dependencies for this module:
 //   ../express
 
-import * as express from 'express';
-import { RequestHandler, Router } from 'express';
+import { NextFunction, Request, RequestHandler, Response, Router } from 'express';
 
-type IControllerType = new (req: express.Request, res: express.Response, next: express.NextFunction) => any;
+export type IControllerType = new (req: Request, res: Response, next: NextFunction) => any;
 export interface IAuthenticatedRouterOptions {
     middleware?: Array<RequestHandler>;
     controllerBuilder?(controller: IControllerType): RequestHandler;
 }
+export interface IMountedRoute {
+    path: string;
+    verb: string;
+    controller: IControllerType | undefined;
+}
 export class AuthenticatedRoute {
-    constructor(routePrefix: string, router: express.Router, opts: IAuthenticatedRouterOptions);
+    routePrefix: string;
+    verb: string;
+    controller?: IControllerType;
+    constructor(routePrefix: string, router: Router, opts: IAuthenticatedRouterOptions);
     use(middleware: RequestHandler): this;
     get(controller: IControllerType | RequestHandler): this;
     post(controller: IControllerType | RequestHandler): this;
@@ -24,9 +31,9 @@ export class AuthenticatedRoute {
 }
 export class AuthenticatedRouter {
     router: Router;
+    get routes(): Array<IMountedRoute>;
     constructor(options?: IAuthenticatedRouterOptions | undefined);
-    static build(options: IAuthenticatedRouterOptions, builder: (router: AuthenticatedRouter) => void): express.Router;
+    static build(options: IAuthenticatedRouterOptions, builder: (router: AuthenticatedRouter) => void): AuthenticatedRouter;
     route(route: string): AuthenticatedRoute;
 }
-export {};
 
