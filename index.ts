@@ -1,2 +1,2 @@
 
-export { AuthenticatedRouter, AuthenticatedRoute } from "./src/AuthenticatedRouter";
+export { AuthenticatedRouter, AuthenticatedRoute, IMountedRoute, IAuthenticatedRouterOptions } from "./src/AuthenticatedRouter";
