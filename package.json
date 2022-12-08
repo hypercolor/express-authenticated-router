@@ -99,7 +99,7 @@
     "cross-var": "1.0.3",
     "cz-conventional-changelog": "2.0.0",
     "dts-bundle": "0.7.3",
-    "express": "4.16.3",
+    "express": "4.17.3",
     "gzip-size-cli": "2.0.0",
     "husky": "0.14.1",
     "irish-pub": "0.2.0",
